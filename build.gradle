@@ -1,0 +1,26 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile group: 'org.yaml', name: 'snakeyaml', version: '1.18'
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	compile group: 'org.apache.cxf', name: 'cxf-tools-wsdlto-core', version: '3.1.9'
+	compile group: 'org.apache.cxf', name: 'cxf-tools-wsdlto-frontend-jaxws', version: '3.1.9'
+	compile group: 'org.apache.cxf', name: 'cxf-tools-wsdlto-databinding-jaxb', version: '3.1.9'
+}
