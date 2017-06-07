@@ -6,14 +6,15 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'application'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
+mainClassName = "com.smalik.wsdl2yamlspec.WsdlToYamlSpec"
 
 repositories {
 	mavenCentral()
 }
-
 
 dependencies {
 	compile group: 'org.yaml', name: 'snakeyaml', version: '1.18'
@@ -23,4 +24,11 @@ dependencies {
 	compile group: 'org.apache.cxf', name: 'cxf-tools-wsdlto-core', version: '3.1.9'
 	compile group: 'org.apache.cxf', name: 'cxf-tools-wsdlto-frontend-jaxws', version: '3.1.9'
 	compile group: 'org.apache.cxf', name: 'cxf-tools-wsdlto-databinding-jaxb', version: '3.1.9'
+	compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: '3.1.9'
+}
+
+run {
+	if(project.hasProperty('args')){
+		args project.args.split('\\s')
+	}
 }

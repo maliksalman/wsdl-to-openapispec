@@ -1,5 +1,6 @@
 package com.smalik.wsdl2yamlspec;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.tools.common.ToolContext;
 import org.apache.cxf.tools.wsdlto.WSDLToJava;
 import org.slf4j.Logger;
@@ -9,6 +10,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WsdlToYamlSpec {
 
@@ -16,19 +19,37 @@ public class WsdlToYamlSpec {
 
     public static void main(String[] args) {
 
+        if (args.length != 3) {
+
+            System.err.println("Usage: WsdlToYamlSpec <hosted-wsdl-url> <root-nameclass-pairs> <output-yaml-file>");
+            System.err.println("\nExample arguments:\n");
+            System.err.println("     hosted-wsdl-url:      http://hostname:port/path/to/wsdl/location/sample.wsdl");
+            System.err.println("     root-nameclass-pairs: Request:com.sample.MyRequestClass,Response:com.sample.MyResponseClass,...,SomethingElse:fully.qualified.ClassName");
+            System.err.println("     output-yaml-file:     spec.yaml");
+            System.exit(1);
+        }
+
         try {
-            WsdlToYamlSpec converter = new WsdlToYamlSpec();
-            NameClassPair[] pairs = new NameClassPair[] {
-                    new NameClassPair("DetermineRiskAndPremiumsRequest", "com.lmig.pi.vehicleratingmarketservice.messages.DetermineRiskAndPremiumsVehicleAgreementRequestDTO"),
-                    new NameClassPair("DetermineRiskAndPremiumsResponse", "com.lmig.pi.vehicleratingmarketservice.messages.DetermineRiskAndPremiumsResponse")
-            };
-            converter.convert("http://axpin-p6xo0dnb.lmig.com:9080/PiVehicleRatingUnderwritingMarketServiceModuleWeb/sca/VehicleRatingMarketServiceWS/WEB-INF/wsdl/com/lmig/pi/vehicleratingmarketservice/PiVehicleRatingUnderwritingMarketServiceModule_VehicleRatingMarketServiceWS.wsdl", new File("spec.yaml"), pairs);
+            // get the WSDL url
+            String wsdlUrl = args[0];
+
+            // parse the name-class pairs
+            List<NameClassPair> pairs = new ArrayList<>();
+            for (String pairString: StringUtils.split(args[1], ',')) {
+                String[] pairParts = StringUtils.split(pairString, ':');
+                pairs.add(new NameClassPair(pairParts[0], pairParts[1]));
+            }
+
+            // get the output filename
+            String outputYaml = args[2];
+
+            new WsdlToYamlSpec().convert(wsdlUrl, new File(outputYaml), pairs);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Something went wrong", e);
         }
     }
 
-    public void convert(String wsdlUri, File outputYaml, NameClassPair... pairs) throws Exception {
+    public void convert(String wsdlUri, File outputYaml, List<NameClassPair> pairs) throws Exception {
         URLClassLoader newCl = getGeneratedClassLoader(wsdlUri);
         YamlGenerator generator = new YamlGenerator(newCl);
 

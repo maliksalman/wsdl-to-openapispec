@@ -15,6 +15,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class YamlGenerator {
@@ -27,7 +28,7 @@ public class YamlGenerator {
 		this.classLoader = classLoader;
 	}
 
-	public String generateYaml(NameClassPair ...pairs) throws Exception {
+	public String generateYaml(List<NameClassPair> pairs) throws Exception {
 		
 		// collect object graph information
 		Map<String, ObjectInfo> collector = new LinkedHashMap<>();
